@@ -45,7 +45,6 @@ fun Application.module(testing: Boolean = false) {
     routing {
         route("/") {
             get {
-//                call.respond("HELLO WORLD!")
                 call.respond(Todos.getAll())
             }
             get("{id}") {

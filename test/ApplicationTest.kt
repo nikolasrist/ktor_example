@@ -9,9 +9,12 @@ import io.ktor.routing.*
 import io.ktor.http.*
 import io.ktor.auth.*
 import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import io.ktor.jackson.*
 import kotlin.test.*
 import io.ktor.server.testing.*
+import java.nio.charset.Charset
 
 class ApplicationTest {
     @Test
@@ -19,7 +22,9 @@ class ApplicationTest {
         withTestApplication({ module(testing = true) }) {
             handleRequest(HttpMethod.Get, "/").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
-                assertEquals("HELLO WORLD!", response.content)
+                assertEquals(ContentType.Application.Json.withCharset(Charset.forName("UTF-8")), response.contentType())
+                val value = jacksonObjectMapper().readValue<List<Item>>(response.content!!)
+                assertEquals(emptyList(), value)
             }
         }
     }
